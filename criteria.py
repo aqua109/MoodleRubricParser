@@ -3,7 +3,10 @@ import unicodedata
 
 class Criteria:
     def __init__(self, text, value):
-        self.text = text
+        if text == "":
+            self.text = "."
+        else:
+            self.text = text
         self.value = value
 
     def get_criteria(self):
