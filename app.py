@@ -8,8 +8,8 @@ from criterion import Criterion
 from rubric import Rubric
 
 
-def read_rubric():
-    with open("rubric.csv", encoding="utf-8-sig") as csvfile:
+def read_rubric(filename):
+    with open(f"{filename}.csv", encoding="utf-8-sig") as csvfile:
         rdr = csv.reader(csvfile, delimiter=",")
         rubric = []
         for row in rdr:
@@ -57,30 +57,37 @@ def enter_rubric(rubric):
             keyboard.press_and_release("tab")
             keyboard.press_and_release("tab")
         if count != length:
-            print(count, length)
             keyboard.press_and_release("tab")
         for i in range(4):
             keyboard.press_and_release("tab")
 
 
 def main():
-    csv = read_rubric()
-    rubric = create_rubric(csv)
-    display_rubric(rubric)
-    confirmation = input("Is this correct [y/n]: ")
-    if confirmation == "y":
-        print("Open the desired 'Define Rubric' moodle page")
-        print(f"Create {rubric.dict['criterion_count']} blank criterions with {rubric.dict['criteria_count']} blank levels")
-        ready = ""
-        while ready != "ready":
-            ready = input("Type 'Ready' when you are ready for input: ").lower()
-        print("Make sure your cursor is in the first criterion input")
-        print("Press insert to begin rubric input")
-        keyboard.wait("insert")
-        enter_rubric(rubric)
-        print("Rubric entered")
-    else:
-        print("Adjust the .csv file and try again")
+    filename = input("Enter .csv filename: ").replace(".csv", "")
+    try:
+        csv = read_rubric(filename)
+        try:
+            rubric = create_rubric(csv)
+            display_rubric(rubric)
+            confirmation = input("Is this correct [y/n]: ")
+            if confirmation == "y":
+                print("Open the desired 'Define Rubric' moodle page")
+                print(f"Create {rubric.dict['criterion_count']} blank criterions with {rubric.dict['criteria_count']} blank levels")
+                ready = ""
+                while ready != "ready":
+                    ready = input("Type 'Ready' when you are ready for input: ").lower()
+                print("Make sure your cursor is in the first criterion input")
+                print("Press insert to begin rubric input")
+                keyboard.wait("insert")
+                enter_rubric(rubric)
+                print("Rubric entered")
+            else:
+                print("Adjust the .csv file and try again")
+        except IndexError:
+            print("Failed to read .csv file, please ensure formatting is correct")
+    except FileNotFoundError:
+        print(f"File: {filename} not found, please try again")
+        main()
 
 
 if __name__ == "__main__":
