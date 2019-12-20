@@ -17,4 +17,3 @@ class Rubric:
 
     def get_dict(self):
         return self.dict
-

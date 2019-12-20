@@ -1,4 +1,3 @@
-import json
 import unicodedata
 from criteria import Criteria
 
